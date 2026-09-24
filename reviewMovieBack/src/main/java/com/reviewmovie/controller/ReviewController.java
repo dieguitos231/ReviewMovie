@@ -25,7 +25,10 @@ public class ReviewController {
      * Ejemplo de uso: POST /api/reviews
      * Body: { "id": "tt0372784", "rating": 5, "description": "Excelente película" }
      */
-    @PostMapping({"", "/pelicula/{peliculaId}"})
+
+
+    /*
+    @PostMapping({})
     public ResponseEntity<Review> crearReview(
             @PathVariable(name = "peliculaId", required = false) String pathPeliculaId,
             @RequestParam(name = "id", required = false) String queryId,
@@ -55,6 +58,15 @@ public class ReviewController {
         Review reviewCreada = reviewService.crearReview(finalRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(reviewCreada);
     }
+     */
+
+    /**
+     * Endpoint para la creacion de una nueva review
+     * 
+     * 
+     * 
+     * 
+    */
 
     /**
      * Endpoint para consultar todas las reseñas o filtrar por id de película (?id=..., ?movieId=... o ?imdbId=...).

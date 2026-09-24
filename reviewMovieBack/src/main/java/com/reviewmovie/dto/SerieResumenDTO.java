@@ -6,6 +6,7 @@ public record SerieResumenDTO(
     String imdbId,
     String title,
     String year,
+    String poster,
     String totalSeasons
 ) {
     @JsonProperty("id")

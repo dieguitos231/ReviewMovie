@@ -6,7 +6,7 @@ public record MovieResumenDTO(
     String imdbId,
     String title,
     String year,
-    String genre
+    String poster
 ){
     @JsonProperty("id")
     public String id() {

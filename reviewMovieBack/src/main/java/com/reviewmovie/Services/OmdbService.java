@@ -248,21 +248,20 @@ public class OmdbService {
      * Consulta el detalle para obtener el género y evitar valores nulos.
      */
     public MovieResumenDTO mapearPeliculaResumen(OmdbSearchItemDTO item) {
-        String genre = obtenerGeneroPorId(item.imdbId());
         return new MovieResumenDTO(
                 item.imdbId(),
+                item.poster(),
                 item.title(),
-                item.year(),
-                genre
+                item.year()
         );
     }
 
     public MovieResumenDTO mapearPeliculaResumen(OmdbSearchItemDTO item, String genre) {
         return new MovieResumenDTO(
                 item.imdbId(),
+                item.poster(),
                 item.title(),
-                item.year(),
-                genre
+                item.year()
         );
     }
 
@@ -274,6 +273,7 @@ public class OmdbService {
         String totalSeasons = obtenerTotalSeasonsPorId(item.imdbId());
         return new SerieResumenDTO(
                 item.imdbId(),
+                item.poster(),
                 item.title(),
                 item.year(),
                 totalSeasons
@@ -283,6 +283,7 @@ public class OmdbService {
     public SerieResumenDTO mapearSerieResumen(OmdbSearchItemDTO item, String totalSeasons) {
         return new SerieResumenDTO(
                 item.imdbId(),
+                item.poster(),
                 item.title(),
                 item.year(),
                 totalSeasons
