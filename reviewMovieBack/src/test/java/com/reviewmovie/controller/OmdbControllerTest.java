@@ -3,6 +3,8 @@ package com.reviewmovie.controller;
 import com.reviewmovie.Models.Movie.Movie;
 import com.reviewmovie.Models.Serie.Serie;
 import com.reviewmovie.Services.OmdbService;
+import com.reviewmovie.dto.MovieResumenDTO;
+import com.reviewmovie.dto.SerieResumenDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -29,15 +31,10 @@ class OmdbControllerTest {
 
     @Test
     void testBuscarPeliculas() throws Exception {
-        Movie movie = new Movie(
+        MovieResumenDTO movie = new MovieResumenDTO(
                 "tt0372784",
-                "https://image.poster/batman.jpg",
                 "Batman Begins",
-                "movie",
                 "2005",
-                null,
-                null,
-                null,
                 null
         );
 
@@ -45,24 +42,18 @@ class OmdbControllerTest {
 
         mockMvc.perform(get("/api/omdb/peliculas").param("titulo", "Batman"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value("tt0372784"))
+                .andExpect(jsonPath("$[0].imdbId").value("tt0372784"))
                 .andExpect(jsonPath("$[0].title").value("Batman Begins"))
-                .andExpect(jsonPath("$[0].type").value("movie"))
                 .andExpect(jsonPath("$[0].year").value("2005"))
-                .andExpect(jsonPath("$[0].image").value("https://image.poster/batman.jpg"));
+                .andExpect(jsonPath("$[0].genre").isEmpty());
     }
 
     @Test
     void testBuscarSeries() throws Exception {
-        Serie serie = new Serie(
+        SerieResumenDTO serie = new SerieResumenDTO(
                 "tt0103359",
-                "https://image.poster/batman-series.jpg",
                 "Batman: The Animated Series",
-                "serie",
                 "1992–1995",
-                null,
-                null,
-                null,
                 null
         );
 
@@ -70,11 +61,10 @@ class OmdbControllerTest {
 
         mockMvc.perform(get("/api/omdb/series").param("titulo", "Batman"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value("tt0103359"))
+                .andExpect(jsonPath("$[0].imdbId").value("tt0103359"))
                 .andExpect(jsonPath("$[0].title").value("Batman: The Animated Series"))
-                .andExpect(jsonPath("$[0].type").value("serie"))
                 .andExpect(jsonPath("$[0].year").value("1992–1995"))
-                .andExpect(jsonPath("$[0].image").value("https://image.poster/batman-series.jpg"));
+                .andExpect(jsonPath("$[0].totalSeasons").isEmpty());
     }
 
     @Test

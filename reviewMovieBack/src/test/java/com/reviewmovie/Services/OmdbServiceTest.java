@@ -2,9 +2,11 @@ package com.reviewmovie.Services;
 
 import com.reviewmovie.Models.Movie.Movie;
 import com.reviewmovie.Models.Serie.Serie;
+import com.reviewmovie.dto.MovieResumenDTO;
 import com.reviewmovie.dto.OmdbResponseDTO;
 import com.reviewmovie.dto.OmdbSearchItemDTO;
 import com.reviewmovie.dto.OmdbSearchResponseDTO;
+import com.reviewmovie.dto.SerieResumenDTO;
 import org.junit.jupiter.api.Test;
 import tools.jackson.databind.ObjectMapper;
 
@@ -105,16 +107,13 @@ class OmdbServiceTest {
                 "https://image.poster/batman.jpg"
         );
 
-        Movie movie = omdbService.mapearPeliculaResumen(item);
+        MovieResumenDTO movie = omdbService.mapearPeliculaResumen(item);
 
         assertNotNull(movie);
-        assertEquals("tt0372784", movie.id());
+        assertEquals("tt0372784", movie.imdbId());
         assertEquals("Batman Begins", movie.title());
-        assertEquals("movie", movie.type());
         assertEquals("2005", movie.year());
-        assertEquals("https://image.poster/batman.jpg", movie.image());
-        assertNull(movie.plot());
-        assertNull(movie.director());
+        assertNull(movie.genre(), "genre viene null desde la búsqueda general de OMDb");
     }
 
     @Test
@@ -127,16 +126,13 @@ class OmdbServiceTest {
                 "https://image.poster/batman-series.jpg"
         );
 
-        Serie serie = omdbService.mapearSerieResumen(item);
+        SerieResumenDTO serie = omdbService.mapearSerieResumen(item);
 
         assertNotNull(serie);
-        assertEquals("tt0103359", serie.id());
+        assertEquals("tt0103359", serie.imdbId());
         assertEquals("Batman: The Animated Series", serie.title());
-        assertEquals("serie", serie.type());
         assertEquals("1992–1995", serie.year());
-        assertEquals("https://image.poster/batman-series.jpg", serie.image());
-        assertNull(serie.plot());
-        assertNull(serie.director());
+        assertNull(serie.totalSeasons(), "totalSeasons viene null desde la búsqueda general de OMDb");
     }
 
     @Test

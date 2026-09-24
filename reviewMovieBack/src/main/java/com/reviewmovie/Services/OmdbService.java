@@ -245,27 +245,27 @@ public class OmdbService {
 
     /**
      * Asigna los datos de un item de búsqueda al modelo Movie para mostrar en cartas.
+     * Nota: la búsqueda general de OMDb no devuelve 'genre', por lo que llega null.
      */
     public MovieResumenDTO mapearPeliculaResumen(OmdbSearchItemDTO item) {
         return new MovieResumenDTO(
                 item.imdbId(),
-                item.poster(),
                 item.title(),
-                "movie",
-                item.year()
+                item.year(),
+                null
         );
     }
 
     /**
      * Asigna los datos de un item de búsqueda al modelo Serie para mostrar en cartas.
+     * Nota: la búsqueda general de OMDb no devuelve 'totalSeasons', por lo que llega null.
      */
     public SerieResumenDTO mapearSerieResumen(OmdbSearchItemDTO item) {
         return new SerieResumenDTO(
                 item.imdbId(),
-                item.poster(),
                 item.title(),
-                "serie",
-                item.year()
+                item.year(),
+                null
         );
     }
 
@@ -275,9 +275,7 @@ public class OmdbService {
     public Movie mapearPelicula(OmdbResponseDTO omdb) {
         return new Movie(
                 omdb.imdbId(),
-                omdb.poster(),
                 omdb.title(),
-                "movie",
                 omdb.year(),
                 omdb.runtime(),
                 omdb.director(),
