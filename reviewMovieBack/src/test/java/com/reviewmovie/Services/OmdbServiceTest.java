@@ -48,13 +48,12 @@ class OmdbServiceTest {
         assertNotNull(movie);
         assertEquals("tt1375666", movie.id());
         assertEquals("Inception", movie.title());
-        assertEquals("movie", movie.type());
         assertEquals("2010", movie.year());
+        assertEquals("Action, Sci-Fi", movie.genre());
         assertEquals("148 min", movie.runtime());
         assertEquals("Christopher Nolan", movie.director());
         assertEquals("A thief who steals corporate secrets...", movie.plot());
         assertEquals("Leonardo DiCaprio, Joseph Gordon-Levitt", movie.actors());
-        assertEquals("https://image.poster/inception.jpg", movie.image());
     }
 
     @Test
@@ -88,13 +87,11 @@ class OmdbServiceTest {
         assertNotNull(serie);
         assertEquals("tt0903747", serie.id());
         assertEquals("Breaking Bad", serie.title());
-        assertEquals("serie", serie.type());
         assertEquals("2008–2013", serie.year());
         assertEquals("Crime, Drama, Thriller", serie.genre());
         assertEquals("Vince Gilligan", serie.director());
         assertEquals("A chemistry teacher diagnosed with cancer...", serie.plot());
         assertEquals("Bryan Cranston, Aaron Paul", serie.actors());
-        assertEquals("https://image.poster/bb.jpg", serie.image());
     }
 
     @Test

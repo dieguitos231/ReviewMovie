@@ -35,7 +35,7 @@ class OmdbControllerTest {
                 "tt0372784",
                 "Batman Begins",
                 "2005",
-                null
+                "Action, Crime, Drama"
         );
 
         when(omdbService.buscarPeliculas(eq("Batman"), any())).thenReturn(List.of(movie));
@@ -45,7 +45,7 @@ class OmdbControllerTest {
                 .andExpect(jsonPath("$[0].imdbId").value("tt0372784"))
                 .andExpect(jsonPath("$[0].title").value("Batman Begins"))
                 .andExpect(jsonPath("$[0].year").value("2005"))
-                .andExpect(jsonPath("$[0].genre").isEmpty());
+                .andExpect(jsonPath("$[0].genre").value("Action, Crime, Drama"));
     }
 
     @Test
@@ -54,7 +54,7 @@ class OmdbControllerTest {
                 "tt0103359",
                 "Batman: The Animated Series",
                 "1992–1995",
-                null
+                "4"
         );
 
         when(omdbService.buscarSeries(eq("Batman"), any())).thenReturn(List.of(serie));
@@ -64,17 +64,16 @@ class OmdbControllerTest {
                 .andExpect(jsonPath("$[0].imdbId").value("tt0103359"))
                 .andExpect(jsonPath("$[0].title").value("Batman: The Animated Series"))
                 .andExpect(jsonPath("$[0].year").value("1992–1995"))
-                .andExpect(jsonPath("$[0].totalSeasons").isEmpty());
+                .andExpect(jsonPath("$[0].totalSeasons").value("4"));
     }
 
     @Test
     void testBuscarPorId() throws Exception {
         Movie movieDetalle = new Movie(
                 "tt0372784",
-                "https://image.poster/batman.jpg",
                 "Batman Begins",
-                "movie",
                 "2005",
+                "Action, Crime, Drama",
                 "140 min",
                 "Christopher Nolan",
                 "Bruce Wayne trains...",
@@ -87,6 +86,7 @@ class OmdbControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value("tt0372784"))
                 .andExpect(jsonPath("$.title").value("Batman Begins"))
+                .andExpect(jsonPath("$.genre").value("Action, Crime, Drama"))
                 .andExpect(jsonPath("$.director").value("Christopher Nolan"))
                 .andExpect(jsonPath("$.runtime").value("140 min"))
                 .andExpect(jsonPath("$.plot").value("Bruce Wayne trains..."));

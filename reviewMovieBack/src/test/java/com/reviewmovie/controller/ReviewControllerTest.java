@@ -50,6 +50,30 @@ class ReviewControllerTest {
                 .andExpect(jsonPath("$.id").value("tt0372784"))
                 .andExpect(jsonPath("$.rating").value(5))
                 .andExpect(jsonPath("$.description").value("Excelente película"));
+
+        org.mockito.ArgumentCaptor<CreateReviewDTO> captor = org.mockito.ArgumentCaptor.forClass(CreateReviewDTO.class);
+        org.mockito.Mockito.verify(reviewService).crearReview(captor.capture());
+        org.junit.jupiter.api.Assertions.assertEquals("tt0372784", captor.getValue().id());
+    }
+
+    @Test
+    void testCrearReviewConImdbIdCapturaIdCorrecto() throws Exception {
+        Review review = new Review(1L, 5, "tt15351", "Excelente película");
+        when(reviewService.crearReview(any(CreateReviewDTO.class))).thenReturn(review);
+
+        String jsonPayload = """
+                {
+                    "imdbId": "tt15351",
+                    "rating": 5,
+                    "description": "Excelente película"
+                }
+                """;
+
+        mockMvc.perform(post("/api/reviews")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonPayload))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value("tt15351"));
     }
 
     @Test

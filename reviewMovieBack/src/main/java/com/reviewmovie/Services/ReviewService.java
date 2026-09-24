@@ -105,6 +105,9 @@ public class ReviewService {
         if (dto.description() != null) {
             reviewExistente.setDescription(dto.description());
         }
+        if (dto.id() != null && !dto.id().isBlank()) {
+            reviewExistente.setId(dto.id().trim());
+        }
 
         return reviewRepository.save(reviewExistente);
     }

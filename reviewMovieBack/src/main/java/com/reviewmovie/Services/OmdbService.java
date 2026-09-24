@@ -69,7 +69,7 @@ public class OmdbService {
             return Collections.emptyList();
         }
 
-        return response.search().stream()
+        return response.search().parallelStream()
                 .map(this::mapearPeliculaResumen)
                 .toList();
     }
@@ -106,7 +106,7 @@ public class OmdbService {
             return Collections.emptyList();
         }
 
-        return response.search().stream()
+        return response.search().parallelStream()
                 .map(this::mapearSerieResumen)
                 .toList();
     }
@@ -245,28 +245,92 @@ public class OmdbService {
 
     /**
      * Asigna los datos de un item de búsqueda al modelo Movie para mostrar en cartas.
-     * Nota: la búsqueda general de OMDb no devuelve 'genre', por lo que llega null.
+     * Consulta el detalle para obtener el género y evitar valores nulos.
      */
     public MovieResumenDTO mapearPeliculaResumen(OmdbSearchItemDTO item) {
+        String genre = obtenerGeneroPorId(item.imdbId());
         return new MovieResumenDTO(
                 item.imdbId(),
                 item.title(),
                 item.year(),
-                null
+                genre
+        );
+    }
+
+    public MovieResumenDTO mapearPeliculaResumen(OmdbSearchItemDTO item, String genre) {
+        return new MovieResumenDTO(
+                item.imdbId(),
+                item.title(),
+                item.year(),
+                genre
         );
     }
 
     /**
      * Asigna los datos de un item de búsqueda al modelo Serie para mostrar en cartas.
-     * Nota: la búsqueda general de OMDb no devuelve 'totalSeasons', por lo que llega null.
+     * Consulta el detalle para obtener el total de temporadas y evitar valores nulos.
      */
     public SerieResumenDTO mapearSerieResumen(OmdbSearchItemDTO item) {
+        String totalSeasons = obtenerTotalSeasonsPorId(item.imdbId());
         return new SerieResumenDTO(
                 item.imdbId(),
                 item.title(),
                 item.year(),
-                null
+                totalSeasons
         );
+    }
+
+    public SerieResumenDTO mapearSerieResumen(OmdbSearchItemDTO item, String totalSeasons) {
+        return new SerieResumenDTO(
+                item.imdbId(),
+                item.title(),
+                item.year(),
+                totalSeasons
+        );
+    }
+
+    /**
+     * Obtiene el género de un contenido por su ID de IMDb.
+     */
+    public String obtenerGeneroPorId(String imdbId) {
+        if (imdbId == null || imdbId.isBlank() || apiKey == null || apiKey.isBlank()) {
+            return null;
+        }
+        try {
+            URI uri = UriComponentsBuilder.fromUriString(apiUrl)
+                    .queryParam("apikey", apiKey)
+                    .queryParam("i", imdbId)
+                    .build()
+                    .encode()
+                    .toUri();
+
+            OmdbResponseDTO omdb = consultarOmdb(uri);
+            return omdb != null ? omdb.genre() : null;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * Obtiene el total de temporadas de una serie por su ID de IMDb.
+     */
+    public String obtenerTotalSeasonsPorId(String imdbId) {
+        if (imdbId == null || imdbId.isBlank() || apiKey == null || apiKey.isBlank()) {
+            return null;
+        }
+        try {
+            URI uri = UriComponentsBuilder.fromUriString(apiUrl)
+                    .queryParam("apikey", apiKey)
+                    .queryParam("i", imdbId)
+                    .build()
+                    .encode()
+                    .toUri();
+
+            OmdbResponseDTO omdb = consultarOmdb(uri);
+            return omdb != null ? omdb.totalSeasons() : null;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     /**
@@ -277,6 +341,7 @@ public class OmdbService {
                 omdb.imdbId(),
                 omdb.title(),
                 omdb.year(),
+                omdb.genre(),
                 omdb.runtime(),
                 omdb.director(),
                 omdb.plot(),
@@ -290,13 +355,12 @@ public class OmdbService {
     public Serie mapearSerie(OmdbResponseDTO omdb) {
         return new Serie(
                 omdb.imdbId(),
-                omdb.poster(),
                 omdb.title(),
-                "serie",
                 omdb.year(),
                 omdb.genre(),
                 omdb.director(),
                 omdb.plot(),
+                omdb.totalSeasons(),
                 omdb.actors()
         );
     }

@@ -25,20 +25,46 @@ public class ReviewController {
      * Ejemplo de uso: POST /api/reviews
      * Body: { "id": "tt0372784", "rating": 5, "description": "Excelente película" }
      */
-    @PostMapping
-    public ResponseEntity<Review> crearReview(@RequestBody CreateReviewDTO request) {
-        Review reviewCreada = reviewService.crearReview(request);
+    @PostMapping({"", "/pelicula/{peliculaId}"})
+    public ResponseEntity<Review> crearReview(
+            @PathVariable(name = "peliculaId", required = false) String pathPeliculaId,
+            @RequestParam(name = "id", required = false) String queryId,
+            @RequestParam(name = "movieId", required = false) String queryMovieId,
+            @RequestParam(name = "imdbId", required = false) String queryImdbId,
+            @RequestBody(required = false) CreateReviewDTO request) {
+        String finalId = null;
+        if (request != null && request.id() != null && !request.id().isBlank()) {
+            finalId = request.id();
+        } else if (pathPeliculaId != null && !pathPeliculaId.isBlank()) {
+            finalId = pathPeliculaId;
+        } else if (queryId != null && !queryId.isBlank()) {
+            finalId = queryId;
+        } else if (queryMovieId != null && !queryMovieId.isBlank()) {
+            finalId = queryMovieId;
+        } else if (queryImdbId != null && !queryImdbId.isBlank()) {
+            finalId = queryImdbId;
+        }
+
+        CreateReviewDTO finalRequest = new CreateReviewDTO(
+                request != null ? request.idReview() : null,
+                finalId,
+                request != null ? request.rating() : null,
+                request != null ? request.description() : null
+        );
+
+        Review reviewCreada = reviewService.crearReview(finalRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(reviewCreada);
     }
 
     /**
-     * Endpoint para consultar todas las reseñas o filtrar por id de película (?id=... o ?movieId=...).
+     * Endpoint para consultar todas las reseñas o filtrar por id de película (?id=..., ?movieId=... o ?imdbId=...).
      */
     @GetMapping
     public ResponseEntity<List<Review>> obtenerReviews(
             @RequestParam(name = "id", required = false) String id,
-            @RequestParam(name = "movieId", required = false) String movieId) {
-        String queryId = id != null ? id : movieId;
+            @RequestParam(name = "movieId", required = false) String movieId,
+            @RequestParam(name = "imdbId", required = false) String imdbId) {
+        String queryId = id != null ? id : (movieId != null ? movieId : imdbId);
         if (queryId != null && !queryId.isBlank()) {
             return ResponseEntity.ok(reviewService.buscarPorPeliculaId(queryId.trim()));
         }
@@ -67,8 +93,29 @@ public class ReviewController {
     @PutMapping("/{idReview}")
     public ResponseEntity<Review> actualizarReview(
             @PathVariable Long idReview,
+            @RequestParam(name = "id", required = false) String queryId,
+            @RequestParam(name = "movieId", required = false) String queryMovieId,
+            @RequestParam(name = "imdbId", required = false) String queryImdbId,
             @RequestBody CreateReviewDTO request) {
-        return ResponseEntity.ok(reviewService.actualizarReview(idReview, request));
+        String finalId = null;
+        if (request != null && request.id() != null && !request.id().isBlank()) {
+            finalId = request.id();
+        } else if (queryId != null && !queryId.isBlank()) {
+            finalId = queryId;
+        } else if (queryMovieId != null && !queryMovieId.isBlank()) {
+            finalId = queryMovieId;
+        } else if (queryImdbId != null && !queryImdbId.isBlank()) {
+            finalId = queryImdbId;
+        }
+
+        CreateReviewDTO finalRequest = new CreateReviewDTO(
+                request != null ? request.idReview() : null,
+                finalId,
+                request != null ? request.rating() : null,
+                request != null ? request.description() : null
+        );
+
+        return ResponseEntity.ok(reviewService.actualizarReview(idReview, finalRequest));
     }
 
     /**
