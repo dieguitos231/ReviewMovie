@@ -27,27 +27,15 @@ public class ReviewController {
      */
 
 
-    /*
+    
     @PostMapping({})
     public ResponseEntity<Review> crearReview(
-            @PathVariable(name = "peliculaId", required = false) String pathPeliculaId,
-            @RequestParam(name = "id", required = false) String queryId,
-            @RequestParam(name = "movieId", required = false) String queryMovieId,
-            @RequestParam(name = "imdbId", required = false) String queryImdbId,
+            //@RequestParam(name = "id", required = false) String queryId,
             @RequestBody(required = false) CreateReviewDTO request) {
         String finalId = null;
         if (request != null && request.id() != null && !request.id().isBlank()) {
             finalId = request.id();
-        } else if (pathPeliculaId != null && !pathPeliculaId.isBlank()) {
-            finalId = pathPeliculaId;
-        } else if (queryId != null && !queryId.isBlank()) {
-            finalId = queryId;
-        } else if (queryMovieId != null && !queryMovieId.isBlank()) {
-            finalId = queryMovieId;
-        } else if (queryImdbId != null && !queryImdbId.isBlank()) {
-            finalId = queryImdbId;
         }
-
         CreateReviewDTO finalRequest = new CreateReviewDTO(
                 request != null ? request.idReview() : null,
                 finalId,
@@ -58,7 +46,7 @@ public class ReviewController {
         Review reviewCreada = reviewService.crearReview(finalRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(reviewCreada);
     }
-     */
+     
 
     /**
      * Endpoint para la creacion de una nueva review
