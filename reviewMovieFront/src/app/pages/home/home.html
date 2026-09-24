@@ -1,0 +1,309 @@
+<div class="container">
+  <!-- Título -->
+  <div class="row">
+    <div class="col-12 d-flex justify-content-center align-items-center my-4">
+      <h2 class="fw-bold">Search for Movies or Series</h2>
+    </div>
+  </div>
+
+  <!-- Buscador -->
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-6">
+      <div class="input-group mb-2">
+        <button
+          type="button"
+          class="btn"
+          [class.btn-danger]="tipoBusqueda === 'movie'"
+          [class.btn-outline-danger]="tipoBusqueda !== 'movie'"
+          (click)="seleccionarTipo('movie')"
+        >
+          MOVIE
+        </button>
+
+        <button
+          type="button"
+          class="btn"
+          [class.btn-primary]="tipoBusqueda === 'series'"
+          [class.btn-outline-primary]="tipoBusqueda !== 'series'"
+          (click)="seleccionarTipo('series')"
+        >
+          SERIE
+        </button>
+
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Enter result or series..."
+          [formControl]="busqueda"
+        />
+
+        <button class="btn btn-warning" type="submit" (click)="buscar()">Search</button>
+      </div>
+      @if (busqueda.invalid || busqueda.touched) {
+        @if (busqueda.hasError('minlength')) {
+          <div class="alert alert-danger" role="alert">
+            <strong>Ingresa al menos 2 caracteres para realizar la búsqueda.</strong>
+          </div>
+        }
+      }
+    </div>
+  </div>
+
+  
+  <div class="row g-4 mt-4">
+    @for (result of resultado; track result.id) {
+      <div class="col-12 col-sm-6 col-lg-3">
+        <div class="card result-card h-100">
+          @if (result.image) {
+            <img
+              [src]="result.image"
+              [alt]="result.title"
+              class="result-poster"
+              (error)="result.image = ''"
+            />
+          } @else {
+            <div class="poster-placeholder">
+              <mat-icon>result</mat-icon>
+              <span>Sin imagen</span>
+            </div>
+          }
+
+          <div class="card-body d-flex flex-column">
+            <h4 class="card-title text-break">{{ result.title }}</h4>
+
+            <h6 class="card-subtitle text-muted">{{ result.year }}</h6>
+            
+            <div class="d-flex gap-2 mt-auto pt-3">
+              @if(tipoBusqueda == 'movie'){
+                <button
+                  type="button"
+                  class="btn btn-light d-flex align-items-center gap-1"
+                  (click)="buscarInfoPelicula(result.id)"
+                >
+                  <mat-icon>info</mat-icon>
+                  More Info
+                </button>
+              }
+              @if (tipoBusqueda === 'series') {
+                <button
+                  type="button"
+                  class="btn btn-light d-flex align-items-center gap-1"
+                  (click)="buscarInfoSerie(result.id)"
+                >
+                  <mat-icon>info</mat-icon>
+                  More Info
+                </button>
+              }
+
+              <button
+                type="button"
+                class="btn btn-warning d-flex align-items-center gap-1"
+                (click)="abrirVentanaReview()"
+              >
+                <mat-icon>star</mat-icon>
+                Review
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+  <!-- More info -->
+  @if (mostrarInfoMovie) {
+    <div class="modal fade show d-block" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header d-flex gap-3">
+            <h5 class="modal-title">{{infoMovie?.title}} <small class="text-muted">{{infoMovie?.year}}</small></h5>
+            <button
+              type="button"
+              class="btn-close"
+              aria-label="Cerrar"
+              (click)="cerrarMovie()"
+            ></button>
+          </div>
+
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-2">
+                <h6>Runtime</h6>
+                <p>{{infoMovie?.runtime}}</p>
+              </div>
+              <div class="col-4">
+                <h6>Genre</h6>
+                <p>{{infoMovie?.genre}}</p>
+              </div>
+              <div class="col-2">
+                <h6>Director</h6>
+                <p>{{infoMovie?.director}}</p>
+              </div>
+              <div class="col-4">
+                <h6>Actors</h6>
+                <p>{{infoMovie?.actors}}</p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <h6>Plot</h6>
+                <p>
+                  {{infoMovie?.plot}}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-warning" (click)="abrirVentanaReview()">
+              <div class="d-flex align-items-center fw-bold gap-1">
+                <mat-icon>star</mat-icon>Review
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+  @if (mostrarInfoSerie) {
+    <div class="modal fade show d-block" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header d-flex gap-3">
+            <h5 class="modal-title">{{infoSerie?.title}} <small class="text-muted">{{infoSerie?.years}}</small></h5>
+            <button
+              type="button"
+              class="btn-close"
+              aria-label="Cerrar"
+              (click)="cerrarSerie()"
+            ></button>
+          </div>
+
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-2">
+                <h6>Seasons</h6>
+                <p>{{infoSerie?.actors}}</p>
+              </div>
+              <div class="col-4">
+                <h6>Genre</h6>
+                <p>{{infoSerie?.genre}}</p>
+              </div>
+              <div class="col-2">
+                <h6>Director</h6>
+                <p>{{infoSerie?.director}}</p>
+              </div>
+              <div class="col-4">
+                <h6>Actors</h6>
+                <p>{{infoSerie?.actors}}</p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <h6>Plot</h6>
+                <p>
+                  {{infoSerie?.plot}}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-warning" (click)="abrirVentanaReview()">
+              <div class="d-flex align-items-center fw-bold gap-1">
+                <mat-icon>star</mat-icon>Review
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+  <!-- Review -->
+  @if (mostrarVentanaReview) {
+    <div class="modal fade show d-block" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header d-flex gap-3">
+            <h5 class="modal-title">Batman <small class="text-muted">(2022)</small></h5>
+            <button
+              type="button"
+              class="btn-close"
+              aria-label="Cerrar"
+              (click)="cerrarVentanaReview()"
+            ></button>
+          </div>
+
+          <div class="modal-body">
+            <div class="row mb-2">
+              <div class="col-12">
+                <label class="form-label fw-semibold"> Calificación </label>
+                <div class="d-flex gap-1">
+                  @for (estrella of estrellas; track estrella) {
+                    <mat-icon
+                      class="estrella"
+                      [class.seleccionada]="estrella <= (calificacionHover || calificacion)"
+                      (mouseenter)="calificacionHover = estrella"
+                      (mouseleave)="calificacionHover = 0"
+                      (click)="seleccionarCalificacion(estrella)"
+                    >
+                      {{ estrella <= (calificacionHover || calificacion) ? 'star' : 'star_border' }}
+                    </mat-icon>
+                  }
+                </div>
+                <small class="text-muted"> {{ calificacion }} de 5 estrellas </small>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <div class="form-floating">
+                  <textarea
+                    class="form-control"
+                    placeholder="Leave a comment here"
+                    id="floatingTextarea"
+                    [formControl]="descripcion"
+                  ></textarea>
+                  <label for="floatingTextarea"> Descripción (opcional) </label>
+                  <!-- Si hay algo invalido lanza error -->
+                  @if (descripcion.invalid && descripcion.touched) {
+                    @if (descripcion.hasError('minlength')) {
+                      <small class="text-danger"> El campo debe tener minimo 4 caracteres </small>
+                    }
+                    @if (descripcion.hasError('maxlength')) {
+                      <small class="text-danger"> El campo debe tener maximo 200 caracteres </small>
+                    }
+                    @if (descripcion.hasError('pattern')) {
+                      <small class="text-danger">
+                        El texto no puede contener caracteres especiales.
+                      </small>
+                    }
+                  }
+
+                  <div class="d-flex justify-content-end mt-1">
+                    <small class="text-muted"> {{ descripcion.value.length }}/200 </small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-danger" (click)="cerrarVentanaReview()">
+              Cancel
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-primary"
+              [disabled]="esDescripcionInvalida()"
+              (click)="enviarReview()"
+            >
+              <div class="d-flex align-items-center fw-bold gap-1">
+                Send <mat-icon>send</mat-icon>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>
