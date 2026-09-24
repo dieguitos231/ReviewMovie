@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record SerieResumenDTO(
     String imdbId,
+    String poster,
     String title,
     String year,
-    String poster,
     String totalSeasons
 ) {
     @JsonProperty("id")
