@@ -10,6 +10,4 @@ La indecisión si esa película es buena o mala, así como que sensaciones y/o p
 
 * El usuario podrá buscar películas o series por su titulo 
 * La calificación es obligatoria, la reseña opcional.
-* Las películas o series deben mostrar la imagen, titulo, generó, año de lanzamiento, director.
-*Solo se puede crear una reseña por película o serie, el usuario puede editar la calificación de una película o serie ya reseñada.
-
+* Solo se puede crear una reseña por película o serie, el usuario puede editar la calificación de una película o serie ya reseñada.
