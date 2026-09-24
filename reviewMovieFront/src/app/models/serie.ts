@@ -2,10 +2,10 @@ export interface Serie {
   id: string;
   image: string;
   title: string;
-  type: 'serie';
   genre: string;
-  years: string;
+  year: string;
   director: string;
   plot: string;
+  totalSeasons: string;
   actors: string;
 }

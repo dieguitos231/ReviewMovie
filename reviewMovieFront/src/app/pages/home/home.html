@@ -33,7 +33,7 @@
         <input
           type="text"
           class="form-control"
-          placeholder="Enter result or series..."
+          placeholder="Search movies or series..."
           [formControl]="busqueda"
         />
 
@@ -49,21 +49,26 @@
     </div>
   </div>
 
-  
-  <div class="row g-4 mt-4">
+  <div class="row mt-4">
+    <div class="col-12 mb-3">
+      <h5>
+        {{ resultado.length }}
+        {{ resultado.length === 1 ? 'resultado encontrado' : 'resultados encontrados' }}
+      </h5>
+    </div>
     @for (result of resultado; track result.id) {
-      <div class="col-12 col-sm-6 col-lg-3">
+      <div class="col-12 col-sm-6 col-lg-3 gap-1 mb-2">
         <div class="card result-card h-100">
-          @if (result.image) {
+          @if (result.poster) {
             <img
-              [src]="result.image"
+              [src]="result.poster"
               [alt]="result.title"
               class="result-poster"
-              (error)="result.image = ''"
+              (error)="result.poster = ''"
             />
           } @else {
             <div class="poster-placeholder">
-              <mat-icon>result</mat-icon>
+              <mat-icon>movie</mat-icon>
               <span>Sin imagen</span>
             </div>
           }
@@ -72,9 +77,9 @@
             <h4 class="card-title text-break">{{ result.title }}</h4>
 
             <h6 class="card-subtitle text-muted">{{ result.year }}</h6>
-            
+
             <div class="d-flex gap-2 mt-auto pt-3">
-              @if(tipoBusqueda == 'movie'){
+              @if (tipoBusqueda == 'movie') {
                 <button
                   type="button"
                   class="btn btn-light d-flex align-items-center gap-1"
@@ -82,6 +87,14 @@
                 >
                   <mat-icon>info</mat-icon>
                   More Info
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-warning d-flex align-items-center gap-1"
+                  (click)="abrirReviewMovie()"
+                >
+                  <mat-icon>star</mat-icon>
+                  Review
                 </button>
               }
               @if (tipoBusqueda === 'series') {
@@ -93,16 +106,15 @@
                   <mat-icon>info</mat-icon>
                   More Info
                 </button>
+                <button
+                  type="button"
+                  class="btn btn-warning d-flex align-items-center gap-1"
+                  (click)="abrirReviewSerie()"
+                >
+                  <mat-icon>star</mat-icon>
+                  Review
+                </button>
               }
-
-              <button
-                type="button"
-                class="btn btn-warning d-flex align-items-center gap-1"
-                (click)="abrirVentanaReview()"
-              >
-                <mat-icon>star</mat-icon>
-                Review
-              </button>
             </div>
           </div>
         </div>
@@ -115,7 +127,9 @@
       <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header d-flex gap-3">
-            <h5 class="modal-title">{{infoMovie?.title}} <small class="text-muted">{{infoMovie?.year}}</small></h5>
+            <h5 class="modal-title">
+              {{ infoMovie?.title }} <small class="text-muted">{{ infoMovie?.year }}</small>
+            </h5>
             <button
               type="button"
               class="btn-close"
@@ -128,33 +142,33 @@
             <div class="row">
               <div class="col-2">
                 <h6>Runtime</h6>
-                <p>{{infoMovie?.runtime}}</p>
+                <p>{{ infoMovie?.runtime }}</p>
               </div>
               <div class="col-4">
                 <h6>Genre</h6>
-                <p>{{infoMovie?.genre}}</p>
+                <p>{{ infoMovie?.genre }}</p>
               </div>
               <div class="col-2">
                 <h6>Director</h6>
-                <p>{{infoMovie?.director}}</p>
+                <p>{{ infoMovie?.director }}</p>
               </div>
               <div class="col-4">
                 <h6>Actors</h6>
-                <p>{{infoMovie?.actors}}</p>
+                <p>{{ infoMovie?.actors }}</p>
               </div>
             </div>
             <div class="row">
               <div class="col-12">
                 <h6>Plot</h6>
                 <p>
-                  {{infoMovie?.plot}}
+                  {{ infoMovie?.plot }}
                 </p>
               </div>
             </div>
           </div>
 
           <div class="modal-footer">
-            <button type="button" class="btn btn-warning" (click)="abrirVentanaReview()">
+            <button type="button" class="btn btn-warning" (click)="abrirReviewMovie()">
               <div class="d-flex align-items-center fw-bold gap-1">
                 <mat-icon>star</mat-icon>Review
               </div>
@@ -169,7 +183,9 @@
       <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header d-flex gap-3">
-            <h5 class="modal-title">{{infoSerie?.title}} <small class="text-muted">{{infoSerie?.years}}</small></h5>
+            <h5 class="modal-title">
+              {{ infoSerie?.title }} <small class="text-muted">{{ infoSerie?.year }}</small>
+            </h5>
             <button
               type="button"
               class="btn-close"
@@ -182,33 +198,33 @@
             <div class="row">
               <div class="col-2">
                 <h6>Seasons</h6>
-                <p>{{infoSerie?.actors}}</p>
+                <p>{{ infoSerie?.totalSeasons }}</p>
               </div>
               <div class="col-4">
                 <h6>Genre</h6>
-                <p>{{infoSerie?.genre}}</p>
+                <p>{{ infoSerie?.genre }}</p>
               </div>
               <div class="col-2">
                 <h6>Director</h6>
-                <p>{{infoSerie?.director}}</p>
+                <p>{{ infoSerie?.director }}</p>
               </div>
               <div class="col-4">
                 <h6>Actors</h6>
-                <p>{{infoSerie?.actors}}</p>
+                <p>{{ infoSerie?.actors }}</p>
               </div>
             </div>
             <div class="row">
               <div class="col-12">
                 <h6>Plot</h6>
                 <p>
-                  {{infoSerie?.plot}}
+                  {{ infoSerie?.plot }}
                 </p>
               </div>
             </div>
           </div>
 
           <div class="modal-footer">
-            <button type="button" class="btn btn-warning" (click)="abrirVentanaReview()">
+            <button type="button" class="btn btn-warning" (click)="abrirReviewSerie()">
               <div class="d-flex align-items-center fw-bold gap-1">
                 <mat-icon>star</mat-icon>Review
               </div>
@@ -219,17 +235,19 @@
     </div>
   }
   <!-- Review -->
-  @if (mostrarVentanaReview) {
+  @if (mostrarReviewMovie) {
     <div class="modal fade show d-block" tabindex="-1" role="dialog">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header d-flex gap-3">
-            <h5 class="modal-title">Batman <small class="text-muted">(2022)</small></h5>
+            <h5 class="modal-title">
+              {{ infoMovie?.title }} <small class="text-muted">{{ infoMovie?.year }}</small>
+            </h5>
             <button
               type="button"
               class="btn-close"
               aria-label="Cerrar"
-              (click)="cerrarVentanaReview()"
+              (click)="cerrarReviewMovie()"
             ></button>
           </div>
 
@@ -246,7 +264,7 @@
                       (mouseleave)="calificacionHover = 0"
                       (click)="seleccionarCalificacion(estrella)"
                     >
-                      {{ estrella <= (calificacionHover || calificacion) ? 'star' : 'star_border' }}
+                      star_border
                     </mat-icon>
                   }
                 </div>
@@ -287,7 +305,7 @@
           </div>
 
           <div class="modal-footer">
-            <button type="button" class="btn btn-outline-danger" (click)="cerrarVentanaReview()">
+            <button type="button" class="btn btn-outline-danger" (click)="cerrarReviewMovie()">
               Cancel
             </button>
 
@@ -295,7 +313,96 @@
               type="button"
               class="btn btn-primary"
               [disabled]="esDescripcionInvalida()"
-              (click)="enviarReview()"
+              (click)="enviarReviewMovie(infoMovie?.id!)"
+            >
+              <div class="d-flex align-items-center fw-bold gap-1">
+                Send <mat-icon>send</mat-icon>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+  @if (mostrarReviewSerie) {
+    <div class="modal fade show d-block" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header d-flex gap-3">
+            <h5 class="modal-title">
+              {{ infoMovie?.title }} <small class="text-muted">{{ infoMovie?.year }}</small>
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              aria-label="Cerrar"
+              (click)="cerrarReviewSerie()"
+            ></button>
+          </div>
+
+          <div class="modal-body">
+            <div class="row mb-2">
+              <div class="col-12">
+                <label class="form-label fw-semibold"> Calificación </label>
+                <div class="d-flex gap-1">
+                  @for (estrella of estrellas; track estrella) {
+                    <mat-icon
+                      class="estrella"
+                      [class.seleccionada]="estrella <= (calificacionHover || calificacion)"
+                      (mouseenter)="calificacionHover = estrella"
+                      (mouseleave)="calificacionHover = 0"
+                      (click)="seleccionarCalificacion(estrella)"
+                    >
+                      star_border
+                    </mat-icon>
+                  }
+                </div>
+                <small class="text-muted"> {{ calificacion }} de 5 estrellas </small>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <div class="form-floating">
+                  <textarea
+                    class="form-control"
+                    placeholder="Leave a comment here"
+                    id="floatingTextarea"
+                    [formControl]="descripcion"
+                  ></textarea>
+                  <label for="floatingTextarea"> Descripción (opcional) </label>
+                  <!-- Si hay algo invalido lanza error -->
+                  @if (descripcion.invalid && descripcion.touched) {
+                    @if (descripcion.hasError('minlength')) {
+                      <small class="text-danger"> El campo debe tener minimo 4 caracteres </small>
+                    }
+                    @if (descripcion.hasError('maxlength')) {
+                      <small class="text-danger"> El campo debe tener maximo 200 caracteres </small>
+                    }
+                    @if (descripcion.hasError('pattern')) {
+                      <small class="text-danger">
+                        El texto no puede contener caracteres especiales.
+                      </small>
+                    }
+                  }
+
+                  <div class="d-flex justify-content-end mt-1">
+                    <small class="text-muted"> {{ descripcion.value.length }}/200 </small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-danger" (click)="cerrarReviewSerie()">
+              Cancel
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-primary"
+              [disabled]="esDescripcionInvalida()"
+              (click)="enviarReviewSerie(infoMovie?.id!)"
             >
               <div class="d-flex align-items-center fw-bold gap-1">
                 Send <mat-icon>send</mat-icon>

@@ -5,6 +5,7 @@ import { ApiService } from '../../services/api';
 import { Movie } from '../../models/movie';
 import { card } from '../../models/card';
 import { Serie } from '../../models/serie';
+import { Review } from '../../models/review';
 
 @Component({
   imports: [ReactiveFormsModule, MatIcon],
@@ -37,6 +38,7 @@ export class Home {
         next: (datos) => {
           console.log(datos)
           this.resultado = datos;
+          this.busqueda.reset();
           this.cdr.detectChanges();
         },
         error: (error) => {
@@ -47,6 +49,7 @@ export class Home {
     if (this.tipoBusqueda === 'series') {
       this.apiService.buscarSeries(this.busqueda.value).subscribe({
         next: (datos) => {
+          console.log(datos)
           this.resultado = datos;
           this.cdr.detectChanges();
         },
@@ -61,6 +64,7 @@ export class Home {
   buscarInfoPelicula(id: string) {
     this.apiService.buscarInfoPelicula(id).subscribe({
       next: (datos) => {
+        console.log(datos)
         this.infoMovie = datos;
         this.abrirMovie();
         this.cdr.detectChanges();
@@ -76,7 +80,6 @@ export class Home {
   }
   cerrarMovie(): void {
     this.mostrarInfoMovie = false;
-    this.infoMovie=null
   }
   infoSerie:Serie | null=null;
    buscarInfoSerie(id: string) {
@@ -89,7 +92,7 @@ export class Home {
       },
       error: (error) => {
         console.error(error);
-      },
+      }
     });
   }
  mostrarInfoSerie = false;
@@ -98,7 +101,6 @@ export class Home {
   }
   cerrarSerie(): void {
     this.mostrarInfoSerie = false;
-    this.infoSerie=null
   }
   
   
@@ -106,12 +108,21 @@ export class Home {
   /**
    * PANEL DE REALIZAR REVIEW
    */
-  mostrarVentanaReview = false;
-  abrirVentanaReview(): void {
-    this.mostrarVentanaReview = true;
+  mostrarReviewMovie = false;
+  abrirReviewMovie(): void {
+    this.mostrarReviewMovie = true;
   }
-  cerrarVentanaReview(): void {
-    this.mostrarVentanaReview = false;
+  cerrarReviewMovie(): void {
+    this.mostrarReviewMovie = false;
+    this.limpiarCampos();
+  }
+  mostrarReviewSerie = false;
+  abrirReviewSerie(): void {
+    this.mostrarReviewSerie = true;
+  }
+
+  cerrarReviewSerie(): void {
+    this.mostrarReviewSerie = false;
     this.limpiarCampos();
   }
 
@@ -121,8 +132,8 @@ export class Home {
   calificacion = 0;
   calificacionHover = 0;
 
-  seleccionarCalificacion(valor: number): void {
-    this.calificacion = valor;
+  seleccionarCalificacion(estrella: number): void {
+    this.calificacion = estrella;
   }
 
   //Descripcion
@@ -144,14 +155,52 @@ export class Home {
     return this.descripcion.invalid;
   }
 
-  enviarReview() {
+  enviarReviewMovie(id:string) {
     this.descripcion.markAllAsTouched();
 
     if (this.descripcion.invalid) {
       return;
     }
+    const newReview:Review={
+      id:id,
+      rating:this.calificacion,
+      description:this.descripcion.value
+    }
+    this.apiService.realizarReview(newReview).subscribe({
+      next:(datos)=>{
+
+      },
+      error:(error)=>{
+        console.error(error)
+      }
+    })
     console.log('Calificacion:', this.calificacion);
     console.log('Descripcion', this.descripcion.value);
-    this.cerrarVentanaReview();
+    this.cerrarReviewMovie();
   }
+  enviarReviewSerie(id:string) {
+
+    this.descripcion.markAllAsTouched();
+
+    if (this.descripcion.invalid) {
+      return;
+    }
+    const newReview:Review={
+      id:id,
+      rating:this.calificacion,
+      description:this.descripcion.value
+    }
+    this.apiService.realizarReview(newReview).subscribe({
+      next:()=>{
+      },
+      error:(error)=>{
+        console.error(error)
+      }
+    })
+    console.log('Calificacion:', this.calificacion);
+    console.log('Descripcion', this.descripcion.value);
+    
+  }
+
+  
 }

@@ -1,6 +1,6 @@
 export interface Review {
-  idReview: number;
   id: string;
+  idReview?: number;
   rating: number;
-  description:string;
+  description?:string;
 }

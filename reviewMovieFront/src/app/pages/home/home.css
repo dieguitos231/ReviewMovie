@@ -27,13 +27,18 @@
   height: 48px;
   font-size: 48px;
 }
+
 .estrella {
   cursor: pointer;
   font-size: 32px;
   width: 32px;
   height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   transition: transform 0.15s ease;
 }
+
 
 .estrella:hover {
   transform: scale(1.15);

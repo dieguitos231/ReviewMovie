@@ -3,26 +3,46 @@
   <div class="row align-items-center mb-4">
     <div class="col-12 col-md-8">
       <h2 class="fw-bold mb-1">Reviews</h2>
-      <p class="text-muted mb-0">List of rated reviews </p>
+      <p class="text-muted mb-0">List of rated reviews</p>
     </div>
     <div class="col-12 col-md-4 text-md-end mt-3">
-      <span class="badge bg-dark fs-6 p-2">
-        Total Reviews:
-
-      </span>
+      <span class="badge bg-dark fs-6 p-2"> Total Reviews:{{listaReviews.length}} </span>
     </div>
   </div>
-  
   <!-- Tabla de Reviews -->
   <div class="row">
     <div class="col-12">
-        <div class="table-responsive">
-            <table class="table-reviews">
-
-            </table>
-
-        </div>
+      <table class=" table table-bordered">
+        <thead class="table-dark">
+          <tr>
+            <th>Id Review</th>
+            <th>Calificacion</th>
+            <th>Descripcion</th>
+            <th class="text-center">Accion</th>
+          </tr>
+        </thead>
+        <tbody>
+        @for (review of listaReviews; track review.idReview) {
+            <tr>
+              <th>{{ review.idReview }}</th>
+              <td>{{ review.rating }}</td>
+              @if(review.description == ''){
+                <td><i>Sin descripcion</i></td>
+              }@else {
+                <td>{{ review.description }}</td>
+              }
+              <td class="d-flex justify-content-center">
+                <button class="btn btn-danger d-flex align-items-center" (click)="eliminarReview(review.idReview!)"><mat-icon>delete</mat-icon></button>
+              </td>
+            </tr>
+          
+        }@empty {
+          <td colspan="4" class="text-center">
+            No hay reviews registradas
+          </td>
+        }
+        </tbody>
+      </table>
     </div>
-
   </div>
 </div>
