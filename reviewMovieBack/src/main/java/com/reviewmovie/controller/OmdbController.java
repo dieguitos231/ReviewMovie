@@ -1,8 +1,9 @@
 package com.reviewmovie.controller;
 
-import com.reviewmovie.Models.Movie.Movie;
-import com.reviewmovie.Models.Serie.Serie;
 import com.reviewmovie.Services.OmdbService;
+import com.reviewmovie.dto.MovieResumenDTO;
+import com.reviewmovie.dto.SerieResumenDTO;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +26,7 @@ public class OmdbController {
      * Ejemplo: GET /api/omdb/peliculas?titulo=Batman
      */
     @GetMapping({"/peliculas", "/pelicula"})
-    public ResponseEntity<List<Movie>> buscarPeliculas(
+    public ResponseEntity<List<MovieResumenDTO>> buscarPeliculas(
             @RequestParam(name = "titulo", required = false) String titulo,
             @RequestParam(name = "nombre", required = false) String nombre,
             @RequestParam(name = "s", required = false) String s,
@@ -44,7 +45,7 @@ public class OmdbController {
      * Ejemplo: GET /api/omdb/series?titulo=Batman
      */
     @GetMapping({"/series", "/serie"})
-    public ResponseEntity<List<Serie>> buscarSeries(
+    public ResponseEntity<List<SerieResumenDTO>> buscarSeries(
             @RequestParam(name = "titulo", required = false) String titulo,
             @RequestParam(name = "nombre", required = false) String nombre,
             @RequestParam(name = "s", required = false) String s,
@@ -71,7 +72,7 @@ public class OmdbController {
      * Endpoint general: busca películas por coincidencia de nombre (parámetro 's').
      */
     @GetMapping("/buscar")
-    public ResponseEntity<List<Movie>> buscar(
+    public ResponseEntity<List<MovieResumenDTO>> buscar(
             @RequestParam(name = "titulo", required = false) String titulo,
             @RequestParam(name = "nombre", required = false) String nombre,
             @RequestParam(name = "page", required = false) Integer page) {

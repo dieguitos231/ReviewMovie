@@ -3,9 +3,12 @@ package com.reviewmovie.Services;
 import tools.jackson.databind.ObjectMapper;
 import com.reviewmovie.Models.Movie.Movie;
 import com.reviewmovie.Models.Serie.Serie;
+import com.reviewmovie.dto.MovieResumenDTO;
 import com.reviewmovie.dto.OmdbResponseDTO;
 import com.reviewmovie.dto.OmdbSearchItemDTO;
 import com.reviewmovie.dto.OmdbSearchResponseDTO;
+import com.reviewmovie.dto.SerieResumenDTO;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -38,11 +41,11 @@ public class OmdbService {
      * Búsqueda de películas mediante el parámetro 's' de OMDb.
      * Retorna una lista de películas mapeadas al modelo Movie.
      */
-    public List<Movie> buscarPeliculas(String titulo) {
+    public List<MovieResumenDTO> buscarPeliculas(String titulo) {
         return buscarPeliculas(titulo, null);
     }
 
-    public List<Movie> buscarPeliculas(String titulo, Integer page) {
+    public List<MovieResumenDTO> buscarPeliculas(String titulo, Integer page) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(apiUrl)
                 .queryParam("apikey", apiKey)
                 .queryParam("s", titulo)
@@ -75,11 +78,11 @@ public class OmdbService {
      * Búsqueda de series mediante el parámetro 's' de OMDb.
      * Retorna una lista de series mapeadas al modelo Serie.
      */
-    public List<Serie> buscarSeries(String titulo) {
+    public List<SerieResumenDTO> buscarSeries(String titulo) {
         return buscarSeries(titulo, null);
     }
 
-    public List<Serie> buscarSeries(String titulo, Integer page) {
+    public List<SerieResumenDTO> buscarSeries(String titulo, Integer page) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(apiUrl)
                 .queryParam("apikey", apiKey)
                 .queryParam("s", titulo)
@@ -243,34 +246,26 @@ public class OmdbService {
     /**
      * Asigna los datos de un item de búsqueda al modelo Movie para mostrar en cartas.
      */
-    public Movie mapearPeliculaResumen(OmdbSearchItemDTO item) {
-        return new Movie(
+    public MovieResumenDTO mapearPeliculaResumen(OmdbSearchItemDTO item) {
+        return new MovieResumenDTO(
                 item.imdbId(),
                 item.poster(),
                 item.title(),
                 "movie",
-                item.year(),
-                null,
-                null,
-                null,
-                null
+                item.year()
         );
     }
 
     /**
      * Asigna los datos de un item de búsqueda al modelo Serie para mostrar en cartas.
      */
-    public Serie mapearSerieResumen(OmdbSearchItemDTO item) {
-        return new Serie(
+    public SerieResumenDTO mapearSerieResumen(OmdbSearchItemDTO item) {
+        return new SerieResumenDTO(
                 item.imdbId(),
                 item.poster(),
                 item.title(),
                 "serie",
-                item.year(),
-                null,
-                null,
-                null,
-                null
+                item.year()
         );
     }
 
